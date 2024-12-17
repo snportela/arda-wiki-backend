@@ -7,6 +7,7 @@ const router = Router();
 const jwt = require("jsonwebtoken");
 const jwtTokens = require("../utils/jwt-helpers.js");
 const bcrypt = require("bcrypt");
+const decryptPassword = require("../utils/decrypt.js");
 
 if (typeof localStorage === "undefined" || localStorage === null) {
   var LocalStorage = require("node-localstorage").LocalStorage;
@@ -22,10 +23,10 @@ router.post("/login", async (req, res) => {
     if (users.rows.length === 0)
       return res.status(401).json({ error: "Email is incorrect " });
 
-    const validPassword = await bcrypt.compare(
-      password,
-      users.rows[0].password
-    );
+    let psw = decryptPassword(password);
+    console.log(psw);
+
+    const validPassword = await bcrypt.compare(psw, users.rows[0].password);
     if (!validPassword)
       return res.status(401).json({ error: "Incorrect password" });
 
