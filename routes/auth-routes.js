@@ -1,5 +1,3 @@
-const express = require("express");
-
 const pool = require("../server_config");
 const { Router, application } = require("express");
 const router = Router();
@@ -23,17 +21,16 @@ router.post("/login", async (req, res) => {
     if (users.rows.length === 0)
       return res.status(401).json({ error: "Email is incorrect " });
 
-    let psw = decryptPassword(password);
-    console.log(psw);
-
-    const validPassword = await bcrypt.compare(psw, users.rows[0].password);
+    const validPassword = bcrypt.compare(
+      decryptPassword(password),
+      users.rows[0].password
+    );
     if (!validPassword)
       return res.status(401).json({ error: "Incorrect password" });
 
     let tokens = jwtTokens(users.rows[0]);
 
     localStorage.setItem("refresh_token", tokens.refreshToken);
-
     res.json(tokens);
   } catch (error) {
     res.status(401).json({ error: error.message });
