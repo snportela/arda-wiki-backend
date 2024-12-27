@@ -19,18 +19,16 @@ router.post("/login", async (req, res) => {
       email,
     ]);
     if (users.rows.length === 0)
-      return res.status(401).json({ error: "Email is incorrect " });
+      return res.status(401).json({ error: "Incorrect email or password" });
 
-    const validPassword = bcrypt.compare(
+    const validPassword = await bcrypt.compare(
       decryptPassword(password),
       users.rows[0].password
     );
     if (!validPassword)
-      return res.status(401).json({ error: "Incorrect password" });
+      return res.status(401).json({ error: "Incorrect email or password" });
 
     let tokens = jwtTokens(users.rows[0]);
-
-    localStorage.setItem("refresh_token", tokens.refreshToken);
     res.json(tokens);
   } catch (error) {
     res.status(401).json({ error: error.message });
