@@ -67,9 +67,7 @@ router.post("/", authenticateToken, async (req, res) => {
       "INSERT INTO periods (name, description) VALUES ($1, $2) RETURNING *",
       [name, description]
     );
-    res
-      .status(201)
-      .send(`Period created with ID: ${results.rows[0].period_id}`);
+    res.status(201).json({ periods: req.body });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -84,7 +82,7 @@ router.put("/:id", authenticateToken, async (req, res) => {
       "UPDATE periods SET name = $1, description = $2 WHERE period_id = $3",
       [name, description, id]
     );
-    res.status(200).send(`Updated period with ID: ${id}`);
+    res.status(200).json({ periods: req.body });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -98,7 +96,7 @@ router.delete("/:id", authenticateToken, async (req, res) => {
       "DELETE FROM periods WHERE period_id = $1",
       [id]
     );
-    res.status(200).send(`Deleted period with ID: ${id}`);
+    res.status(200).send({ message: `Deleted period with ID: ${id}` });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }

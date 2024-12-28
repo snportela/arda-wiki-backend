@@ -126,9 +126,7 @@ router.post(
         "INSERT INTO characters (name, description, race_id, location_id, weapon_id, image) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
         [name, description, race_id, parse_location, parse_weapon, filename]
       );
-      res
-        .status(201)
-        .send(`Character created with ID: ${results.rows[0].character_id}`);
+      res.status(201).json({ characters: req.body });
     } catch (error) {
       res.status(400).json({ error: error.message });
     }
@@ -181,7 +179,7 @@ router.put(
         "UPDATE characters SET name = $1, description = $2, race_id = $3, location_id = $4, weapon_id = $5, image = $6 WHERE character_id = $7",
         [name, description, race_id, parse_location, parse_weapon, filename, id]
       );
-      res.status(200).send(`Updated character with ID: ${id}`);
+      res.status(200).json({ characters: req.body });
     } catch (error) {
       res.status(400).json({ error: error.message });
     }
@@ -213,8 +211,8 @@ router.delete("/:id", authenticateToken, async (req, res) => {
       });
     }
 
-    pool.query("DELETE FROM characters WHERE character_id = $1", [id]);
-    res.status(200).send(`Deleted character wih ID: ${id}`);
+    await pool.query("DELETE FROM characters WHERE character_id = $1", [id]);
+    res.status(200).json({ message: `Deleted character with ID: ${id}` });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }

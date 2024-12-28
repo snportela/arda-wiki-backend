@@ -66,7 +66,7 @@ router.post("/", authenticateToken, async (req, res) => {
       "INSERT INTO races (name, description) VALUES ($1, $2) RETURNING *",
       [name, description]
     );
-    res.status(201).send(`Race created with ID: ${results.rows[0].race_id}`);
+    res.status(201).json({ races: req.body });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -81,7 +81,7 @@ router.put("/:id", authenticateToken, async (req, res) => {
       "UPDATE races SET name = $1, description = $2 WHERE race_id = $3",
       [name, description, id]
     );
-    res.status(200).send(`Race updated with ID: ${id}`);
+    res.status(200).json({ races: req.body });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -94,7 +94,7 @@ router.delete("/:id", authenticateToken, async (req, res) => {
     const results = await pool.query("DELETE FROM races WHERE race_id = $1", [
       id,
     ]);
-    res.status(200).send(`Deleted race with ID: ${id}`);
+    res.status(200).json({ message: `Deleted race with ID: ${id}` });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }

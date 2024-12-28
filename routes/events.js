@@ -80,7 +80,7 @@ router.post("/", authenticateToken, async (req, res) => {
       "INSERT INTO events (name, date, description, period_id) VALUES ($1, $2, $3, $4) RETURNING *",
       [name, date, description, period_id]
     );
-    res.status(201).send(`Event created with ID: ${results.rows[0].event_id}`);
+    res.status(201).json({ events: req.body });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -95,7 +95,7 @@ router.put("/:id", authenticateToken, async (req, res) => {
       "UPDATE events SET name = $1, date = $2, description = $3, period_id = $4 WHERE event_id = $5",
       [name, date, description, period_id, id]
     );
-    res.status(200).send(`Updated event with ID: ${id}`);
+    res.status(200).json({ events: req.body });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -108,7 +108,7 @@ router.delete("/:id", authenticateToken, async (req, res) => {
     const results = await pool.query("DELETE FROM events WHERE event_id = $1", [
       id,
     ]);
-    res.status(200).send(`Deleted event with ID: ${id}`);
+    res.status(200).json({ message: `Deleted event with ID: ${id}` });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }

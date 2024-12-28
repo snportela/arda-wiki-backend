@@ -67,9 +67,7 @@ router.post("/", authenticateToken, async (req, res) => {
       "INSERT INTO weapons (name, description) VALUES ($1, $2) RETURNING *",
       [name, description]
     );
-    res
-      .status(201)
-      .send(`Created weapon with ID: ${results.rows[0].weapon_id}`);
+    res.status(201).json({ weapons: req.body });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -84,7 +82,7 @@ router.put("/:id", authenticateToken, async (req, res) => {
       "UPDATE weapons SET name = $1, description = $2 WHERE weapon_id = $3",
       [name, description, id]
     );
-    res.status(200).send(`Weapon with ID: ${id} updated.`);
+    res.status(200).json({ weapons: req.body });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -99,7 +97,7 @@ router.delete("/:id", authenticateToken, async (req, res) => {
       [id]
     );
 
-    res.status(200).send(`Deleted weapon with ID: ${id}`);
+    res.status(200).json({ message: `Deleted weapon with ID: ${id}` });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }

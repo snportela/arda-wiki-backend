@@ -111,9 +111,7 @@ router.post(
         "INSERT INTO locations (name, description, race_id, image) VALUES ($1, $2, $3, $4) RETURNING *",
         [name, description, parse_race, filename]
       );
-      res
-        .status(201)
-        .send(`Location created with ID: ${results.rows[0].location_id}`);
+      res.status(201).json({ locations: req.body });
     } catch (error) {
       res.status(400).json({ error: error.message });
     }
@@ -165,7 +163,7 @@ router.put(
         "UPDATE locations SET name = $1, description = $2, race_id = $3, image = $4 WHERE location_id = $5",
         [name, description, parse_race, filename, id]
       );
-      res.status(200).send(`Location with ID: ${id} updated.`);
+      res.status(200).json({ locations: req.body });
     } catch (error) {
       res.status(400).json({ error: error.message });
     }
@@ -198,7 +196,7 @@ router.delete("/:id", authenticateToken, async (req, res) => {
     }
 
     pool.query("DELETE FROM locations WHERE location_id = $1", [id]);
-    res.status(200).send(`Deleted location with ID: ${id}`);
+    res.status(200).json({ message: `Deleted location with ID: ${id}` });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
