@@ -21,7 +21,7 @@ router.post("/login", async (req, res) => {
     if (users.rows.length === 0)
       return res.status(401).json({ error: "Incorrect email or password" });
 
-    const validPassword = await bcrypt.compare(
+    const validPassword = bcrypt.compare(
       decryptPassword(password),
       users.rows[0].password
     );
@@ -29,7 +29,7 @@ router.post("/login", async (req, res) => {
       return res.status(401).json({ error: "Incorrect email or password" });
 
     let tokens = jwtTokens(users.rows[0]);
-    res.json(tokens);
+    res.status(200).json({ token: tokens.accessToken});
   } catch (error) {
     res.status(401).json({ error: error.message });
   }
