@@ -46,4 +46,25 @@ router.post("/", async (req, res) => {
   }
 });
 
+router.put("/:id", authenticateToken, async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const { name, email } = req.body;
+
+    const results = await pool.query("SELECT * FROM users WHERE user_id = $1", [
+      id,
+    ]);
+    const current_user = results.rows[0];
+    const password = current_user.password;
+
+    pool.query(
+      "UPDATE users SET name = $1, email = $2, password = $3 WHERE user_id = $4",
+      [name, email, password, id]
+    );
+    res.status(200).json({ users: req.body });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 module.exports = router;
