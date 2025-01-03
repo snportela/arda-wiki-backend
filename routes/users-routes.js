@@ -15,21 +15,19 @@ router.get("/", authenticateToken, async (req, res) => {
   }
 });
 
-router.get("/user_data", async (req, res) => {
-  const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
-  if (req.headers && req.headers.authorization) {
-    try {
-      if (token == null) return res.status(401).json({ error: "Null token" });
+router.get("/:id", authenticateToken, async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
 
-      jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (error, user) => {
-        if (error) return res.status(403).json({ error: error.message });
-
-        res.status(200).json(user);
-      });
-    } catch (error) {
-      return res.status(401).send("unauthorized");
+    const results = await pool.query("SELECT * FROM users WHERE user_id = $1", [
+      id,
+    ]);
+    if (results.rows.length === 0) {
+      throw "User not found";
     }
+    res.status(200).json(results.rows[0]);
+  } catch (error) {
+    res.status(400).json({ error: error });
   }
 });
 
