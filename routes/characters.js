@@ -92,13 +92,14 @@ router.get("/:id", async (req, res) => {
     const id = parseInt(req.params.id);
 
     const results = await pool.query(
-      `SELECT characters.*, locations.name as location, races.name as race, weapons.name as weapon
-    FROM characters left JOIN LOCATIONS 
-    ON locations.location_id = any (characters.location_id)
-    left join races 
-    on characters.race_id = races.race_id
-    left join weapons 
-    on weapons.weapon_id = any (characters.weapon_id) WHERE character_id = $1`,
+      `SELECT characters.*, array_agg(locations.name)::varchar as location, races.name as race, array_agg(distinct weapons.name)::varchar as weapon
+      FROM characters left JOIN LOCATIONS 
+      ON locations.location_id = any (characters.location_id)
+      left join races 
+      on characters.race_id = races.race_id
+      left join weapons 
+      on weapons.weapon_id = any (characters.weapon_id) where character_id = $1
+      group by characters.character_id, races.name`,
       [id]
     );
     if (results.rows.length === 0) {

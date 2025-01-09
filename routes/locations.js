@@ -82,9 +82,10 @@ router.get("/:id", async (req, res) => {
     const id = parseInt(req.params.id);
 
     const results = await pool.query(
-      `SELECT locations.*, races.name as race
+      `SELECT locations.*, array_agg(races.name)::varchar as race
       FROM locations left join races 
-      ON races.race_id = any (locations.race_id) WHERE location_id = $1`,
+      ON races.race_id = any (locations.race_id) WHERE location_id = $1
+      GROUP BY locations.location_id`,
       [id]
     );
     if (results.rows.length === 0) {
