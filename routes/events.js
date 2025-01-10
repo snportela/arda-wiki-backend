@@ -58,7 +58,7 @@ router.get("/:id", async (req, res) => {
     const id = parseInt(req.params.id);
 
     const results = await pool.query(
-      `select events.*, to_char( events.date, 'DD/MM/YYYY') as re_date, array_agg(periods.name)::varchar as period, array_agg(periods.description)::varchar as period_description
+      `select events.*, array_agg(periods.name)::varchar as period, array_agg(periods.description)::varchar as period_description
       from events left join periods 
       on periods.period_id = any (events.period_id) where event_id = $1
       group by events.event_id`,
