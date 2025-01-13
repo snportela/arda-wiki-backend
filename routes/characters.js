@@ -1,4 +1,4 @@
-const { Router, application } = require("express");
+const { Router } = require("express");
 const router = Router();
 const multer = require("multer");
 const fs = require("fs");
@@ -123,7 +123,7 @@ router.post(
     const parse_weapon = JSON.parse(weapon_id);
 
     try {
-      const results = await pool.query(
+      await pool.query(
         "INSERT INTO characters (name, description, race_id, location_id, weapon_id, image) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
         [name, description, race_id, parse_location, parse_weapon, filename]
       );

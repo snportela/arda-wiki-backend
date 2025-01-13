@@ -108,7 +108,7 @@ router.post(
       const { name, description, race_id } = req.body;
       const parse_race = JSON.parse(race_id);
 
-      const results = await pool.query(
+      await pool.query(
         "INSERT INTO locations (name, description, race_id, image) VALUES ($1, $2, $3, $4) RETURNING *",
         [name, description, parse_race, filename]
       );

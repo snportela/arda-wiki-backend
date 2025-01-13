@@ -4,7 +4,6 @@ const { Router, application } = require("express");
 const router = Router();
 const bcrypt = require("bcrypt");
 const authenticateToken = require("../middleware/authorization.js");
-const jwt = require("jsonwebtoken");
 
 router.get("/", authenticateToken, async (req, res) => {
   try {
@@ -60,6 +59,17 @@ router.put("/:id", authenticateToken, async (req, res) => {
       [name, email, password, id]
     );
     res.status(200).json({ users: req.body });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.delete("/:id", authenticateToken, async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+
+    pool.query("DELETE FROM users WHERE user_id = $1", [id]);
+    res.status(200).json({ message: `Deleted user with ID: ${id}` });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

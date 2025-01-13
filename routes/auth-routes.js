@@ -1,5 +1,5 @@
 const pool = require("../server_config");
-const { Router, application } = require("express");
+const { Router } = require("express");
 const router = Router();
 
 const jwtTokens = require("../utils/jwt-helpers.js");

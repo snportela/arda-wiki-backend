@@ -77,7 +77,7 @@ router.put("/:id", authenticateToken, async (req, res) => {
     const id = parseInt(req.params.id);
     const { name, description } = req.body;
 
-    const results = await pool.query(
+    await pool.query(
       "UPDATE races SET name = $1, description = $2 WHERE race_id = $3",
       [name, description, id]
     );
@@ -91,9 +91,7 @@ router.delete("/:id", authenticateToken, async (req, res) => {
   try {
     const id = parseInt(req.params.id);
 
-    const results = await pool.query("DELETE FROM races WHERE race_id = $1", [
-      id,
-    ]);
+    await pool.query("DELETE FROM races WHERE race_id = $1", [id]);
     res.status(200).json({ message: `Deleted race with ID: ${id}` });
   } catch (error) {
     res.status(400).json({ error: error.message });

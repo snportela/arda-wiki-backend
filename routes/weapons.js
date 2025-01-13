@@ -63,7 +63,7 @@ router.post("/", authenticateToken, async (req, res) => {
   try {
     const { name, description } = req.body;
 
-    const results = await pool.query(
+    await pool.query(
       "INSERT INTO weapons (name, description) VALUES ($1, $2) RETURNING *",
       [name, description]
     );
@@ -78,7 +78,7 @@ router.put("/:id", authenticateToken, async (req, res) => {
     const id = parseInt(req.params.id);
     const { name, description } = req.body;
 
-    const results = await pool.query(
+    await pool.query(
       "UPDATE weapons SET name = $1, description = $2 WHERE weapon_id = $3",
       [name, description, id]
     );
@@ -92,10 +92,7 @@ router.delete("/:id", authenticateToken, async (req, res) => {
   try {
     const id = parseInt(req.params.id);
 
-    const results = await pool.query(
-      "DELETE FROM weapons WHERE weapon_id = $1",
-      [id]
-    );
+    await pool.query("DELETE FROM weapons WHERE weapon_id = $1", [id]);
 
     res.status(200).json({ message: `Deleted weapon with ID: ${id}` });
   } catch (error) {
