@@ -4,6 +4,7 @@ const { Router, application } = require("express");
 const router = Router();
 const bcrypt = require("bcrypt");
 const authenticateToken = require("../middleware/authorization.js");
+const decryptPassword = require("../utils/decrypt.js");
 
 router.get("/", authenticateToken, async (req, res) => {
   try {
@@ -24,7 +25,14 @@ router.get("/:id", authenticateToken, async (req, res) => {
     if (results.rows.length === 0) {
       throw "User not found";
     }
-    res.status(200).json(results.rows[0]);
+    // res.status(200).json(results.rows[0]);
+    res
+      .status(200)
+      .json({
+        user_id: results.rows[0].user_id,
+        name: results.rows[0].name,
+        email: results.rows[0].email,
+      });
   } catch (error) {
     res.status(400).json({ error: error });
   }
@@ -32,7 +40,10 @@ router.get("/:id", authenticateToken, async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+    const hashedPassword = await bcrypt.hash(
+      decryptPassword(req.body.password),
+      10
+    );
     const newUser = await pool.query(
       "INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING *",
       [req.body.name, req.body.email, hashedPassword]
