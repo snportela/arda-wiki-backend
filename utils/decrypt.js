@@ -3,6 +3,8 @@ const fs = require("node:fs");
 
 // let privateKeyPem = fs.readFileSync("./private-key.pem", "utf8");
 
+let {privateKeyPem} = JSON.parse(process.env.PRIVATE_KEY)
+
 let privateKey = forge.pki.privateKeyFromPem(process.env.PRIVATE_KEY);
 
 function decryptPassword(cyphertext) {
