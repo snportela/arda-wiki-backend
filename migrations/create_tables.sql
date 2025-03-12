@@ -14,7 +14,7 @@ CREATE TABLE "events" (
 	event_id serial PRIMARY KEY,
 	name VARCHAR(200) NULL,
 	description TEXT NULL,
-	period_id INTEGER[]NULL
+	period_id INTEGER[] NULL
 );
 
 CREATE TABLE "weapons" (
@@ -24,7 +24,7 @@ CREATE TABLE "weapons" (
 );
 
 CREATE TABLE "locations" (
-	location_id serial,
+	location_id serial PRIMARY KEY,
 	name VARCHAR(200) NULL,
 	description TEXT NULL,
 	image TEXT NULL,

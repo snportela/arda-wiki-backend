@@ -18,6 +18,11 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(cors());
+
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+});
+
 app.use(bp.json());
 app.use(bp.urlencoded({ extended: false }));
 
