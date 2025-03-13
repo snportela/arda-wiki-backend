@@ -1,3 +1,5 @@
+CREATE EXTENSION unaccent;
+
 CREATE TABLE "races" (
 	race_id serial PRIMARY KEY,
 	name VARCHAR(200) NULL,

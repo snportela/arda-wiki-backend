@@ -103,7 +103,8 @@ router.post(
   imageUpload.single("image"),
   async (req, res) => {
     try {
-      const filename = "http://localhost:5000/api/images/" + req.file.filename;
+      const filename =
+        "https://arda-wiki-api.onrender.com/api/images/" + req.file.filename;
 
       const { name, description, race_id } = req.body;
       const parse_race = JSON.parse(race_id);
@@ -157,7 +158,8 @@ router.put(
       }
 
       if (req.file) {
-        filename = "http://localhost:5000/api/images/" + req.file.filename;
+        filename =
+          "https://arda-wiki-api.onrender.com/api/images/" + req.file.filename;
       }
 
       pool.query(
